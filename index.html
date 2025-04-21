@@ -1,0 +1,108 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <title>Tongue Reborn Flip</title>
+  <style>
+    html, body {
+      margin: 0;
+      padding: 0;
+      background: transparent;
+      overflow: hidden;
+    }
+
+    #book {
+      perspective: 2000px;
+      width: 100vw;
+      height: 100vh;
+      position: relative;
+    }
+
+    .page {
+      width: 100%;
+      height: 100%;
+      position: absolute;
+      background-size: cover;
+      background-position: center;
+      backface-visibility: hidden;
+      transition: transform 1s ease;
+      transform-origin: left;
+    }
+
+    .flipped {
+      transform: rotateY(-180deg);
+      z-index: 0;
+    }
+
+    .active {
+      z-index: 2;
+    }
+
+    .zone {
+      position: absolute;
+      top: 0;
+      width: 20%;
+      height: 100%;
+      z-index: 5;
+      cursor: pointer;
+    }
+
+    .zone.left { left: 0; }
+    .zone.right { right: 0; }
+  </style>
+</head>
+<body>
+  <div id="book"></div>
+  <div class="zone left" onclick="prevPage()"></div>
+  <div class="zone right" onclick="nextPage()"></div>
+  <audio id="flipSound" src="https://cdn.pixabay.com/audio/2022/03/15/audio_dba9c1f39f.mp3"></audio>
+  <script>
+    const pages = [
+      "https://i.postimg.cc/NF25xF1y/page1.jpg",
+      "https://i.postimg.cc/zvC9kpVG/page2.jpg",
+      "https://i.postimg.cc/WbJPhKXR/page3.jpg"
+    ];
+
+    const book = document.getElementById("book");
+    const flipSound = document.getElementById("flipSound");
+    let currentPage = 0;
+    let pageElements = [];
+
+    pages.forEach((src, index) => {
+      const div = document.createElement("div");
+      div.classList.add("page");
+      div.style.backgroundImage = `url('${src}')`;
+      if (index === 0) div.classList.add("active");
+      book.appendChild(div);
+      pageElements.push(div);
+    });
+
+    function showPage(index) {
+      pageElements.forEach((p, i) => {
+        p.classList.remove("active", "flipped");
+        if (i < index) {
+          p.classList.add("flipped");
+        } else if (i === index) {
+          p.classList.add("active");
+        }
+      });
+    }
+
+    function nextPage() {
+      if (currentPage < pages.length - 1) {
+        currentPage++;
+        flipSound.play();
+        showPage(currentPage);
+      }
+    }
+
+    function prevPage() {
+      if (currentPage > 0) {
+        currentPage--;
+        flipSound.play();
+        showPage(currentPage);
+      }
+    }
+  </script>
+</body>
+</html>
